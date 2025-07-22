@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="vi" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Đồng Hồ Học Tập Động Lực</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    @keyframes fall {
+      0% {transform: translateY(-100vh);}
+      100% {transform: translateY(100vh);}
+    }
+    .star {
+      position: absolute;
+      width: 2px;
+      height: 2px;
+      background: white;
+      border-radius: 50%;
+      animation-name: fall;
+      animation-timing-function: linear;
+      animation-iteration-count: infinite;
+      opacity: 0.7;
+    }
+  </style>
+</head>
+<body class="bg-gray-900 text-white min-h-screen flex flex-col items-center justify-center transition-all duration-700 relative">
+
+  <!-- Stars Background -->
+  <div id="stars" class="absolute inset-0 overflow-hidden z-0 pointer-events-none"></div>
+
+  <!-- Theme & Mode Controls -->
+  <div class="absolute top-4 right-4 z-10 flex gap-2">
+    <select id="themeSelector" class="bg-gray-800 text-white px-2 py-1 rounded">
+      <option value="blue">Xanh Biển</option>
+      <option value="pink">Hồng</option>
+      <option value="green">Xanh Lá</option>
+      <option value="retro">Retro</option>
+      <option value="neon">Neon</option>
+    </select>
+    <button id="toggleMode" class="bg-gray-800 px-2 py-1 rounded hover:bg-gray-700">🌓</button>
+  </div>
+
+  <!-- Clock -->
+  <div class="text-center z-10">
+    <div class="text-5xl md:text-7xl font-bold mb-4" id="clock">--:--:--</div>
+    <div class="text-3xl md:text-4xl animate-bounce">📚🧠🚀</div>
+  </div>
+
+  <!-- Quote -->
+  <div class="mt-10 text-center max-w-xl px-4 z-10">
+    <p class="text-lg md:text-xl italic mb-4 transition duration-300" id="quote">“Học không bao giờ là đủ – học để thay đổi số phận.”</p>
+    <button id="newQuote" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded transition">💡 Đổi câu khác</button>
+  </div>
+
+  <!-- Chữ ký -->
+  <div class="fixed bottom-2 right-4 text-xs text-white opacity-30 hover:opacity-70 transition select-none z-50 pointer-events-none">
+    code by Dương Khải Minh
+  </div>
+
+  <!-- Scripts -->
+  <script>
+    // Clock
+    function updateClock() {
+      const now = new Date();
+      const timeStr = now.toLocaleTimeString();
+      document.getElementById("clock").textContent = timeStr;
+    }
+    setInterval(updateClock, 1000);
+    updateClock();
+
+    // Quotes
+    const quotes = [
+      "Học không bao giờ là đủ – học để thay đổi số phận.",
+      "Không ai sinh ra đã giỏi, chỉ có người không chịu học.",
+      "Kiến thức là sức mạnh, nhưng hành động mới là phép màu.",
+      "Một giờ học hôm nay, mở ra cả tương lai ngày mai.",
+      "Thành công là kết quả của những buổi tối ngồi học thay vì lướt mạng.",
+      "Từng dòng sách bạn lật, là từng bước tiến bạn tạo.",
+      "Chăm chỉ không phản bội – nó chỉ đến hơi muộn.",
+      "Học để biết, học để làm, học để sống xứng đáng.",
+      "Đừng học vì điểm số, hãy học vì giá trị của bạn.",
+      "Ai chịu khó học hôm nay, sẽ sống thoải mái ngày mai.",
+      "Một trang sách hôm nay – một giấc mơ hiện thực mai sau.",
+      "Thức khuya học bài không phải vì ngoan – mà vì khát vọng.",
+      "Kiến thức là vũ khí mạnh nhất mà bạn có thể dùng để thay đổi thế giới.",
+      "Học hỏi là đầu tư duy nhất không bao giờ lỗ.",
+      "Giỏi không phải do gen – mà do rèn.",
+      "Luyện tập khiến bạn giỏi, kiên trì khiến bạn phi thường.",
+      "Đỉnh cao của học là biến kiến thức thành hành động.",
+      "Muốn đi nhanh hãy đi một mình – muốn đi xa hãy học với bạn bè.",
+      "Càng học càng thấy mình nhỏ bé – và đó là dấu hiệu đang lớn lên.",
+      "Không có con đường tắt nào đến thành công – chỉ có con đường học hành.",
+      "Nếu không chịu học hôm nay – bạn sẽ hối tiếc ngày mai.",
+      "Câu trả lời đúng nhất luôn đến từ người kiên nhẫn học hỏi.",
+      "Tự học là kỹ năng quyền lực nhất thế kỷ 21.",
+      "Sách không cắn ai – chỉ khai sáng họ.",
+      "Bài kiểm tra không đáng sợ – sự lười biếng mới là thứ hủy hoại bạn.",
+      "Một người học 10 phút mỗi ngày – còn hơn kẻ chỉ học khi sợ trượt.",
+      "Đọc sách giúp bạn trò chuyện với những bộ óc vĩ đại đã khuất.",
+      "Nếu bạn mệt mỏi, hãy nghỉ – nhưng đừng bỏ học.",
+      "Tâm hồn sáng là tâm hồn được nuôi bằng tri thức.",
+      "Không ai học thay bạn được – nhưng ai cũng có thể truyền cảm hứng cho bạn.",
+      "Từ một câu hỏi nhỏ, có thể mở ra cả một hành trình lớn."
+    ];
+    const quoteEl = document.getElementById("quote");
+    document.getElementById("newQuote").addEventListener("click", () => {
+      const newQuote = quotes[Math.floor(Math.random() * quotes.length)];
+      quoteEl.textContent = `“${newQuote}”`;
+    });
+
+    // Themes
+    const themes = {
+      blue: "bg-blue-900 text-blue-100",
+      pink: "bg-pink-900 text-pink-100",
+      green: "bg-green-900 text-green-100",
+      retro: "bg-yellow-100 text-gray-900",
+      neon: "bg-black text-green-400"
+    };
+    const themeSelector = document.getElementById("themeSelector");
+    themeSelector.addEventListener("change", () => {
+      document.body.className = themes[themeSelector.value] + " min-h-screen flex flex-col items-center justify-center transition-all duration-700 relative";
+    });
+
+    // Mode Toggle
+    const toggleMode = document.getElementById("toggleMode");
+    toggleMode.addEventListener("click", () => {
+      document.body.classList.toggle("bg-white");
+      document.body.classList.toggle("text-black");
+      document.body.classList.toggle("bg-gray-900");
+      document.body.classList.toggle("text-white");
+    });
+
+    // Starfall
+    const starContainer = document.getElementById("stars");
+    for (let i = 0; i < 50; i++) {
+      const star = document.createElement("div");
+      star.classList.add("star");
+      star.style.left = Math.random() * 100 + "vw";
+      star.style.top = "-" + Math.random() * 100 + "vh";
+      star.style.animationDuration = 2 + Math.random() * 5 + "s";
+      starContainer.appendChild(star);
+    }
+  </script>
+</body>
+</html>
